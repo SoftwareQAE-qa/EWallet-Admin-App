@@ -1,42 +1,21 @@
 import { test, expect } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
-import { TwoFAPage } from '../pages/TwoFAPage';
 import { DashboardPage } from '../pages/DashboardPage';
-import { TOTPUtils } from '../utils/totpUtils';
-import * as dotenv from 'dotenv';
-
-// Load environment variables
-dotenv.config();
 
 test.describe('Dashboard Test Cases', () => {
-  let loginPage: LoginPage;
-  let twoFAPage: TwoFAPage;
   let dashboardPage: DashboardPage;
 
+  // This runs before each test - uses stored authentication state
   test.beforeEach(async ({ page }) => {
     // Initialize page objects for each test
-    loginPage = new LoginPage(page);
-    twoFAPage = new TwoFAPage(page);
     dashboardPage = new DashboardPage(page);
     
-    // Perform login for each test (simplified approach)
-    await loginPage.navigateToLogin();
-    await loginPage.fillEmail(process.env.EMAIL!);
-    await loginPage.fillPassword(process.env.PASSWORD!);
-    await loginPage.clickSignIn();
-    
-    // Complete 2FA authentication
-    await loginPage.waitFor2FAPage();
-    const twoFACode = TOTPUtils.generateCurrentTOTP(process.env.TOTP_SECRET!);
-    await twoFAPage.submitOTP(twoFACode);
-    
-    // Wait for dashboard and verify it's loaded
-    await twoFAPage.waitForDashboard();
+    // Navigate directly to dashboard (authentication is already handled globally)
+    await page.goto('/admin');
     await dashboardPage.verifyDashboardLoaded();
   });
 
   test('EW_09 - Validate that the Dashboard is displaying', async ({ page }) => {
-    // Step 1: Log in as Admin (handled by project config)
+    // Step 1: Log in as Admin (already done in global setup)
     // Step 2: Observe the Dashboard
     
     // Verification: Dashboard is displayed with all widgets and information
@@ -52,7 +31,7 @@ test.describe('Dashboard Test Cases', () => {
   });
 
   test('EW_10 - Validate that the Total Orders card is visible and showing actual number', async ({ page }) => {
-    // Step 1: Log in as Admin (handled by project config)
+    // Step 1: Log in as Admin (already done in global setup)
     // Step 2: Check the "Total Orders" card on Dashboard
     
     // Verification: "Total Orders" card is visible and displays actual number counting from the table
@@ -62,7 +41,7 @@ test.describe('Dashboard Test Cases', () => {
   });
 
   test('EW_11 - Validate that the Total Volume Sent card is visible', async ({ page }) => {
-    // Step 1: Log in as Admin (handled by project config)
+    // Step 1: Log in as Admin (already done in global setup)
     // Step 2: Check "Total Volume Sent" card
     
     // Verification: Displays correct currency and value (e.g., $500.00)
@@ -72,7 +51,7 @@ test.describe('Dashboard Test Cases', () => {
   });
 
   test('EW_12 - Validate that Net Profit card is visible', async ({ page }) => {
-    // Step 1: Log in as Admin (handled by project config)
+    // Step 1: Log in as Admin (already done in global setup)
     // Step 2: Check "Net Profit" card
     
     // Verification: "Net Profit" card is visible and value is shown
@@ -82,7 +61,7 @@ test.describe('Dashboard Test Cases', () => {
   });
 
   test('EW_13 - Validate that Pending Orders card is visible', async ({ page }) => {
-    // Step 1: Log in as Admin (handled by project config)
+    // Step 1: Log in as Admin (already done in global setup)
     // Step 2: View "Pending Orders" card
     
     // Verification: Displays number of pending orders correctly
@@ -92,7 +71,7 @@ test.describe('Dashboard Test Cases', () => {
   });
 
   test('EW_14 - Validate Unmatched Send Requests card and link', async ({ page }) => {
-    // Step 1: Log in as Admin (handled by project config)
+    // Step 1: Log in as Admin (already done in global setup)
     // Step 2: Locate "Unmatched Send Requests" card
     await expect(dashboardPage.isUnmatchedSendRequestsCardVisible()).toBeTruthy();
     
@@ -104,7 +83,7 @@ test.describe('Dashboard Test Cases', () => {
   });
 
   test('EW_15 - Validate Delayed Orders card and link', async ({ page }) => {
-    // Step 1: Log in as Admin (already done in beforeEach)
+    // Step 1: Log in as Admin (already done in global setup)
     // Step 2: Click "Manage Delayed Orders"
     await expect(dashboardPage.isDelayedOrdersCardVisible()).toBeTruthy();
     await dashboardPage.clickManageDelayedOrders();
@@ -114,7 +93,7 @@ test.describe('Dashboard Test Cases', () => {
   });
 
   test('EW_16 - Validate Mismatch Transactions card and link', async ({ page }) => {
-    // Step 1: Log in as Admin (already done in beforeEach)
+    // Step 1: Log in as Admin (already done in global setup)
     // Step 2: Click "View Over/Under Sends"
     await expect(dashboardPage.isMismatchTransactionsCardVisible()).toBeTruthy();
     await dashboardPage.clickViewOverUnderSends();
@@ -124,7 +103,7 @@ test.describe('Dashboard Test Cases', () => {
   });
 
   test('EW_17 - Validate that "Add New Order" button is visible', async ({ page }) => {
-    // Step 1: Log in as Admin (already done in beforeEach)
+    // Step 1: Log in as Admin (already done in global setup)
     // Step 2: Locate the orange "Add New Order" button
     
     // Verification: Button is visible and clickable

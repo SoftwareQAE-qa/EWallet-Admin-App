@@ -10,7 +10,10 @@
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
     "install-browsers": "playwright install",
-    "codegen": "playwright codegen"
+    "codegen": "playwright codegen",
+    "auth:setup": "playwright test --global-setup=global-setup.ts",
+    "auth:check": "node scripts/auth-setup.js check",
+    "auth:cleanup": "node scripts/auth-setup.js cleanup"
   },
   "keywords": ["playwright", "testing", "ewallet"],
   "author": "",

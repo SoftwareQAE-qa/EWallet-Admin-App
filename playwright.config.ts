@@ -8,6 +8,7 @@ dotenv.config();
 export default defineConfig({
   testDir: './tests',
   timeout: parseInt(process.env.TIMEOUT_DEFAULT || '60000'),
+  globalSetup: require.resolve('./global-setup'),
   use: {
     baseURL: process.env.BASE_URL || 'https://ewallet.walletwhisper.io',
     headless: false,                               // ✅ Run in headed mode (see browser)
@@ -15,6 +16,8 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    // Use stored authentication state
+    storageState: 'playwright/.auth/user.json',
   },
   projects: [
     { 

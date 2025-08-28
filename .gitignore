@@ -13,3 +13,4 @@ node_modules/
 
 # Storage state
 /storageState/
+/playwright/.auth/

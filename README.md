@@ -76,6 +76,42 @@ TIMEOUT_SHORT=15000
 
 **Important**: Never commit your `.env` file to version control. It's already included in `.gitignore`.
 
+## Authentication & Session Management
+
+This project implements **Playwright's equivalent of Cypress `cy.session()`** using `globalSetup` and `storageState`. This ensures that:
+
+- ✅ **Login happens only once** at the start of the test run
+- ✅ **Session persists** across all subsequent test blocks
+- ✅ **No repeated authentication** in individual tests
+- ✅ **Faster test execution** by avoiding login overhead
+
+### How It Works
+
+1. **Global Setup**: `global-setup.ts` runs once before all tests
+2. **Authentication**: Performs login and 2FA verification
+3. **Session Storage**: Saves authentication state to `playwright/.auth/user.json`
+4. **Test Execution**: All tests use the stored session state automatically
+
+### Authentication Commands
+
+```bash
+# Set up authentication (run once or when session expires)
+npm run auth:setup
+
+# Check authentication status
+npm run auth:check
+
+# Clean up stored authentication
+npm run auth:cleanup
+```
+
+### When to Re-authenticate
+
+- Session expires (usually after 24 hours)
+- Credentials change
+- Authentication fails
+- After running `npm run auth:cleanup`
+
 ## Test Cases
 
 ### Login Test Cases (`login-cases.spec.ts`)

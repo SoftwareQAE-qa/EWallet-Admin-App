@@ -17,7 +17,7 @@ test.describe('Admin Login', () => {
     await login.login('invalid@example.com', process.env.PASSWORD!);
     //await expect(page.getByText(/These credentials do not match our records.|credentials|not found/i)).toBeVisible();
     await expect(page.getByText(/These credentials do not match our records./i)).toBeVisible();
-      
+
   });
   test('EW_03: Valid email, invalid password shows error', async ({ page }) => {
     const login = new LoginPage(page);
@@ -32,10 +32,10 @@ test.describe('Admin Login', () => {
     await login.open();
     await login.signInButton().click();
     // Grab the browser validation message for password field
-  const message = await password.evaluate(el => (el as HTMLInputElement).validationMessage);
- 
-  // Assert exact text (depends on browser + locale)
-  expect(message).toBe('Please fill out this field.');
+    const message = await password.evaluate(el => (el as HTMLInputElement).validationMessage);
+
+    // Assert exact text (depends on browser + locale)
+    expect(message).toBe('Please fill out this field.');
   });
 
   test('EW_05: Forgot password link navigates to reset page', async ({ page }) => {

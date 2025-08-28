@@ -32,27 +32,27 @@ export class LoginPage extends BasePage {
   }
   async loginWith2FA(EMAIL: string, PASSWORD: string) {
     // Step 1: Go to login page
-      await this.page.goto('/login');
-      console.log('Reached login page');
-    
-      // Step 2: Fill credentials and login
-      await this.page.getByLabel(/email address/i).fill(EMAIL);
-      await this.page.getByLabel(/password/i).fill(PASSWORD);
-      await this.page.getByRole('button', { name: /sign in/i }).click();
-    
-      // Step 3: Wait for 2FA page
-      await this.page.waitForURL(/\/admin\/2fa/);
-    
-      // Step 4: Generate current OTP from your pre-shared TOTP secret
-      const twoFACode = authenticator.generate(process.env.TOTP_SECRET!);
-    
-      // Step 5: Enter OTP
-      await this.page.locator('input[type="text"], input[type="tel"]').first().fill(twoFACode);
-      await this.page.getByRole('button', { name: /verify/i }).click();
-    
-      // Step 6: Wait for dashboard
-      await this.page.waitForURL(/\/admin(\/dashboard)?/);
-      // Step 7: Verify dashboard content
-      await expect(this.page.getByText(/dashboard/i)).toBeVisible();
+    await this.page.goto('/login');
+    console.log('Reached login page');
+
+    // Step 2: Fill credentials and login
+    await this.page.getByLabel(/email address/i).fill(EMAIL);
+    await this.page.getByLabel(/password/i).fill(PASSWORD);
+    await this.page.getByRole('button', { name: /sign in/i }).click();
+
+    // Step 3: Wait for 2FA page
+    await this.page.waitForURL(/\/admin\/2fa/);
+
+    // Step 4: Generate current OTP from your pre-shared TOTP secret
+    const twoFACode = authenticator.generate(process.env.TOTP_SECRET!);
+
+    // Step 5: Enter OTP
+    await this.page.locator('input[type="text"], input[type="tel"]').first().fill(twoFACode);
+    await this.page.getByRole('button', { name: /verify/i }).click();
+
+    // Step 6: Wait for dashboard
+    await this.page.waitForURL(/\/admin(\/dashboard)?/);
+    // Step 7: Verify dashboard content
+    await expect(this.page.getByText(/Dashboard/i).first()).toBeVisible();
   }
 }

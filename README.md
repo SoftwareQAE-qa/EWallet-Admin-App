@@ -1,183 +1,130 @@
-# EWallet Playwright Tests - Complete Solution
+# EWallet Playwright Tests
 
-This project contains automated tests for the EWallet application using Playwright, with **automatic 2FA handling** that works even when the TOTP keys get reset on every login.
+This project contains automated tests for the EWallet application using Playwright with a Page Object Model (POM) structure.
 
-## 🚀 Key Features
+## Project Structure
 
-- **Automatic 2FA Setup**: Handles the case where 2FA keys get reset on every login
-- **Dynamic TOTP Secret Extraction**: Automatically extracts TOTP secrets from QR codes or page content
-- **Recovery Code Fallback**: Uses recovery codes if TOTP secret extraction fails
-- **Complete Authentication Flow**: Covers login → 2FA setup → 2FA verification → Dashboard access
+```
+EWallet/
+├── pages/                 # POM classes
+│   ├── BasePage.ts        # Base page with common methods
+│   ├── LoginPage.ts       # Login page interactions
+│   ├── TwoFAPage.ts       # 2FA page interactions
+│   └── DashboardPage.ts   # Dashboard page interactions
+├── utils/
+│   └── totpUtils.ts       # TOTP utilities
+├── tests/
+│   └── login-cases.spec.ts # Comprehensive login test cases
+├── playwright.config.ts    # Playwright configuration with env vars
+└── package.json           # Project dependencies
+```
 
-## 🛠️ Prerequisites
+## Setup
 
-- Node.js 18+ 
-- npm or yarn
-
-## 📋 Complete Setup Instructions
-
-### Step 1: Install Dependencies
+1. Install dependencies:
 ```bash
 npm install
 ```
 
-### Step 2: Install Playwright Browsers
+2. Install Playwright browsers:
 ```bash
-npx playwright install
+npm run install-browsers
 ```
 
-### Step 3: Configure Environment Variables
-1. Copy `config.env.example` to `.env`:
+3. **Configure Environment Variables**:
+   Create a `.env` file in the project root with your credentials:
    ```bash
-   cp config.env.example .env
+   # EWallet Test Configuration
+   BASE_URL=https://ewallet.walletwhisper.io
+   
+   # Admin credentials (REPLACE WITH YOUR ACTUAL CREDENTIALS)
+   EMAIL=your_email@example.com
+   PASSWORD=your_password
+   
+   # 2FA configuration
+   TOTP_SECRET=your_totp_secret
+   
+   # Test configuration
+   NODE_ENV=test
+   TIMEOUT_DEFAULT=60000
+   TIMEOUT_SHORT=15000
    ```
 
-2. Update `.env` with your credentials:
-   ```bash
-   BASE_URL=https://staging.ewalletcashier.com
-   ADMIN_EMAIL=qatesthub2@gmail.com
-   ADMIN_PASSWORD=password
-   TOTP_SECRET=  # Leave empty - will be extracted automatically
-   ```
+## Configuration
 
-## 🧪 Running Tests
+The project uses environment variables for secure configuration. Create a `.env` file in the project root:
 
-### Test the Complete Login Flow
 ```bash
-npm test tests/complete-login.spec.ts
+# EWallet Test Configuration
+BASE_URL=https://ewallet.walletwhisper.io
+
+# Admin credentials (REPLACE WITH YOUR ACTUAL CREDENTIALS)
+EMAIL=your_email@example.com
+PASSWORD=your_password
+
+# 2FA configuration
+TOTP_SECRET=your_totp_secret
+
+# Test configuration
+NODE_ENV=test
+TIMEOUT_DEFAULT=60000
+TIMEOUT_SHORT=15000
 ```
 
-### Test 2FA Setup Specifically
-```bash
-npm test tests/2fa-setup.spec.ts
-```
+**Important**: Never commit your `.env` file to version control. It's already included in `.gitignore`.
 
-### Run All Tests
-```bash
-npm test
-```
+## Test Cases
 
-### Debug Mode (Recommended for Development)
-```bash
-npm run test:ui
-```
+The project includes comprehensive login test cases:
 
-### Headed Mode (See Browser)
-```bash
-npm run test:headed
-```
+### EW_01 - Verify Successful login with valid credentials
+1. Go to ewallet.walletwhisper.io/admin/login
+2. Enter the valid "email" in the email field
+3. Enter the valid "password" in the password field
+4. Click the "Sign-in" button
+5. User is redirected to the admin dashboard
 
-## 🔐 How the 2FA Solution Works
+### EW_02 - Verify 2FA authentication flow
+Complete 2FA authentication process including OTP generation and dashboard access.
 
-The system automatically handles the 2FA key reset issue by:
+### EW_03 - Verify login with invalid email format
+Tests validation for malformed email addresses.
 
-1. **Detecting 2FA Setup**: Checks if the user needs to set up 2FA
-2. **Extracting TOTP Secret**: Automatically extracts the secret from:
-   - QR code data URLs
-   - Page content patterns
-   - Hidden form fields
-3. **Generating TOTP Codes**: Uses the extracted secret to generate valid 2FA codes
-4. **Fallback to Recovery Codes**: If secret extraction fails, uses recovery codes
-5. **Complete Authentication**: Handles the entire flow from login to dashboard access
+### EW_04 - Verify login with empty credentials
+Tests form validation for empty fields.
 
-## 📁 Test Structure
+### EW_05 - Verify login with wrong password
+Tests authentication failure handling.
 
-- `tests/complete-login.spec.ts` - **Main test**: Complete login flow with 2FA
-- `tests/2fa-setup.spec.ts` - **2FA specific**: Tests 2FA setup and verification
-- `tests/dashboard.spec.ts` - Dashboard functionality tests
-- `tests/helpers/auth.ts` - **Core authentication logic** with 2FA handling
-- `tests/helpers/debug-2fa.ts` - Debug utilities for troubleshooting
-- `tests/auth.setup.ts` - Authentication setup utilities
+## Running Tests
 
-## 🔍 Debugging 2FA Issues
+- Run all tests: `npm test`
+- Run tests in Chrome: `npm run test:chrome`
+- Run tests in headed mode: `npm run test:headed`
+- Run tests with UI: `npm run test:ui`
+- Debug tests: `npm run test:debug`
 
-If you encounter 2FA problems:
+## Page Object Model
 
-1. **Run in Debug Mode**:
-   ```bash
-   npm run test:debug
-   ```
+The project uses a POM structure for better maintainability:
 
-2. **Check Console Output**: The tests log detailed information about the 2FA process
+- **BasePage**: Common methods and utilities for all page objects
+- **LoginPage**: Handles login form interactions
+- **TwoFAPage**: Manages 2FA code entry
+- **DashboardPage**: Verifies dashboard content
 
-3. **View Screenshots**: Failed tests automatically capture screenshots in `test-results/`
+## Benefits of POM Structure
 
-4. **Use Debug Helpers**: The `debug-2fa.ts` helper provides detailed page analysis
+- **Maintainability**: Easy to update locators in one place
+- **Reusability**: Page objects can be reused across multiple tests
+- **Readability**: Tests are more readable and focused on business logic
+- **Maintenance**: Changes to UI elements only require updates in page objects
 
-## 🎯 Test Scenarios Covered
+## Environment Variables Benefits
 
-### ✅ Complete Login Flow
-- Email/password authentication
-- 2FA setup (if required)
-- 2FA verification
-- Dashboard access
-- Session persistence
-
-### ✅ 2FA Edge Cases
-- New 2FA setup
-- Existing 2FA verification
-- Recovery code usage
-- Key reset handling
-
-### ✅ Dashboard Functionality
-- Navigation sidebar
-- Charts and metrics
-- User information display
-- Session management
-
-## 🚨 Troubleshooting
-
-### Common Issues:
-
-1. **2FA Setup Fails**: 
-   - Check if the page structure has changed
-   - Run debug tests to see what's on the page
-   - Verify the application is accessible
-
-2. **Authentication Errors**:
-   - Ensure credentials are correct in `.env`
-   - Check if the application requires different authentication flow
-
-3. **Browser Issues**:
-   - Run `npx playwright install` to reinstall browsers
-   - Try running in headed mode to see what's happening
-
-### Debug Commands:
-```bash
-# Run specific test with debugging
-npx playwright test tests/2fa-setup.spec.ts --debug
-
-# Run with UI mode for interactive debugging
-npm run test:ui
-
-# Generate new tests
-npm run codegen
-```
-
-## 📊 Expected Results
-
-After successful execution, you should see:
-- ✅ Login completed successfully
-- ✅ 2FA setup/verification completed
-- ✅ Dashboard accessed with all elements visible
-- ✅ Charts showing "Pending Orders by Platform"
-- ✅ Navigation sidebar with Management, Finance, System sections
-
-## 🔄 Continuous Integration
-
-The solution is designed to work reliably in CI/CD environments:
-- Automatic 2FA handling without manual intervention
-- Robust error handling and fallbacks
-- Detailed logging for debugging
-- Screenshot capture on failures
-
-## 📝 Contributing
-
-1. Follow the existing test patterns
-2. Use the authentication helpers for protected endpoints
-3. Add debug logging for complex flows
-4. Update this README for new features
-
----
-
-**Note**: This solution specifically addresses the DEV's concern about 2FA keys getting reset on every login by automatically extracting and using the new keys each time.
+- **Security**: Credentials are not hardcoded in source code
+- **Flexibility**: Easy to switch between different environments
+- **Team Safety**: Each developer can use their own credentials
+- **CI/CD Ready**: Perfect for automated testing pipelines
+- **Direct Usage**: No intermediate config files needed
+- **Clean Code**: Simple variable names like `process.env.EMAIL`

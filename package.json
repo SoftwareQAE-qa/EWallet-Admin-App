@@ -13,7 +13,12 @@
     "codegen": "playwright codegen",
     "auth:setup": "playwright test --global-setup=global-setup.ts",
     "auth:check": "node scripts/auth-setup.js check",
-    "auth:cleanup": "node scripts/auth-setup.js cleanup"
+    "auth:cleanup": "node scripts/auth-setup.js cleanup",
+    "test:add-new-order": "playwright test tests/add-new-order-cases.spec.ts --project=chrome",
+    "test:import-orders": "playwright test tests/import-orders-cases.spec.ts --project=chrome",
+    "test:import-orders-basic": "playwright test tests/import-orders-basic.spec.ts --project=chrome",
+    "test:login": "playwright test tests/login-cases.spec.ts --project=chrome-no-auth",
+    "test:login:headed": "playwright test tests/login-cases.spec.ts --project=chrome-no-auth --headed"
   },
   "keywords": ["playwright", "testing", "ewallet"],
   "author": "",

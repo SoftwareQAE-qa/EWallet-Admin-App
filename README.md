@@ -103,6 +103,10 @@ npm run auth:check
 
 # Clean up stored authentication
 npm run auth:cleanup
+
+# Run specific test suites
+npm run test:add-new-order
+npm run test:import-orders
 ```
 
 ### When to Re-authenticate
@@ -134,6 +138,22 @@ npm run auth:cleanup
 - **EW_15**: Validate Delayed Orders card and link
 - **EW_16**: Validate Mismatch Transactions card and link
 - **EW_17**: Validate "Add New Order" button visibility
+
+### Add New Order Test Cases (`add-new-order-cases.spec.ts`)
+- **EW_18**: Dashboard > Add New Order - Validate "Add New Order" page loads successfully
+- **EW_19**: Dashboard > Add New Order - Validate an "Import orders" button is visible
+
+### Import Orders Test Cases (`import-orders-cases.spec.ts`)
+- **EW_20**: Dashboard > Add New Order > Import Orders - Validate "Import orders" page loads
+- **EW_21**: Dashboard > Add New Order > Import Orders - Validate "Download Template" button
+- **EW_22**: Dashboard > Add New Order > Import Orders - Validate file upload with valid Excel file
+- **EW_23**: Dashboard > Add New Order > Import Orders - Validate file upload with valid CSV file
+- **EW_24**: Dashboard > Add New Order > Import Orders - Validate "Import orders" button after valid file upload
+- **EW_25**: Dashboard > Add New Order > Import Orders - Validate optional fields are accepted
+- **EW_26**: Dashboard > Add New Order > Import Orders - Validate multiple platforms under same orders
+- **EW_27**: Dashboard > Add New Order > Import Orders - Validate order grouping by order_name
+- **EW_28**: Dashboard > Add New Order > Import Orders - Validate max file size is accepted
+- **EW_29**: Dashboard > Add New Order > Import Orders - Validate drag-and-drop upload
 
 ## Running Tests
 

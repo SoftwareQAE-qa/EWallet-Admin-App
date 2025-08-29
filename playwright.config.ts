@@ -8,7 +8,7 @@ dotenv.config();
 export default defineConfig({
   testDir: './tests',
   timeout: parseInt(process.env.TIMEOUT_DEFAULT || '60000'),
-  globalSetup: require.resolve('./global-setup'),
+  // Remove global setup from here - we'll handle it per project
   use: {
     baseURL: process.env.BASE_URL || 'https://ewallet.walletwhisper.io',
     headless: false,                               // ✅ Run in headed mode (see browser)
@@ -16,8 +16,6 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    // Use stored authentication state
-    storageState: 'playwright/.auth/user.json',
   },
   projects: [
     { 
@@ -25,7 +23,20 @@ export default defineConfig({
       use: { 
         ...devices['Desktop Chrome'],
         channel: 'chrome',                         // ✅ Use Chrome specifically
-      }, 
+        // Use stored authentication state for authenticated tests
+        storageState: 'playwright/.auth/user.json',
+      },
+      // Global setup only for authenticated tests
+      globalSetup: require.resolve('./global-setup'),
+    },
+    {
+      name: 'chrome-no-auth',
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: 'chrome',
+        storageState: 'playwright/.auth/empty.json', // No authentication for login tests
+      },
+      // No global setup for login tests
     }
   ],
 });

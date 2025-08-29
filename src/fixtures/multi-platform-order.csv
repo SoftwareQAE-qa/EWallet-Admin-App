@@ -1,0 +1,2 @@
+order_name,amount,platform,username,telegram_handle,receiving_agent_id,discount_tier_id
+Test Order 1,100,paypal,alexr,@alexrider,5,1

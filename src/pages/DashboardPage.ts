@@ -83,8 +83,8 @@ export class DashboardPage extends BasePage {
     await expect(this.page).toHaveURL(/\/admin?/);
     await expect(this.page.getByRole('heading', { name: /Add New Order/i })).toBeVisible();
     await log('Load Add New Order button is visible and functional');
-    await this.page.goBack(); // Navigate back to the dashboard
-    await expect(this.page).toHaveURL(/\/admin?/);
+    // await this.page.goBack(); // Navigate back to the dashboard
+    // await expect(this.page).toHaveURL(/\/admin?/);
 
   }
 

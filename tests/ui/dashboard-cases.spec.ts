@@ -38,13 +38,13 @@ test.describe('Dashboard Test cases', () => {
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.assertLoaded();
     await dashboardPage.validateUnmatchedSendRequests();
-    await dashboardPage.clickToSeeBreakdown();
+    await dashboardPage.clickToSeeBreakdownAndValidate();
   });
   test('EW_15: Validate that "Manage Delayed Orders" button navigates correctly', async ({ page, loginAsAdmin }) => {
     await loginAsAdmin();
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.assertLoaded();
-    await dashboardPage.manageDelayedOrdersButton();
+    await dashboardPage.manageDelayedOrdersButtonAndValidate();
   });
   test.skip('EW_16: Validate Mismatch Transactions card and link', async ({ page, loginAsAdmin }) => {
     //need to fix this test

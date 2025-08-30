@@ -1,0 +1,3 @@
+order_name,amount,platform,username,minimum_send_amount,telegram_handle,receiving_agent_id,discount_tier_id
+Test Order 1,100,paypal,user1,50,@testuser1,1,1
+Test Order 1,200,stripe,user2,75,@testuser2,2,1

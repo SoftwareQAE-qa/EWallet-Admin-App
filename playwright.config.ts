@@ -5,7 +5,10 @@ dotenv.config();
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 60_000,
+  timeout: 60_000, // ⏱️ per test
+  expect: {
+    timeout: 10_000, // ⏱️ per expect()
+  },
   use: {
     baseURL: process.env.BASE_URL,                 // ✅ so relative paths work
     headless: false,                               // ✅ Run in headed mode (see browser)
@@ -13,6 +16,9 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+
+    actionTimeout: 10_000,     // ⏱️ per action
+    navigationTimeout: 30_000, // ⏱️ per navigation
   },
   projects: [
     { 

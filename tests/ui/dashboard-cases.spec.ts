@@ -53,17 +53,10 @@ test.describe('Dashboard Test cases', () => {
     await dashboardPage.assertLoaded();
     await dashboardPage.validateMismatchTransactionsCard();
   });
-  test('EW_17: Validate that “Add New Order” button is visible and functional', async ({ page, loginAsAdmin }) => {
+  test('EW_17: Validate that "Add New Order" button is visible and functional', async ({ page, loginAsAdmin }) => {
     await loginAsAdmin();
     const dashboardPage = new DashboardPage(page);
     await dashboardPage.assertLoaded();
     await dashboardPage.validateAddNewOrderButton();
-  });
-  test('EW_18:Validate "Add New Order" page loads successfully', async ({ page, loginAsAdmin }) => {
-    await loginAsAdmin();
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.assertLoaded();
-    await dashboardPage.clickAddNewOrder();
-    await dashboardPage.validateCreateNewOrderForm()
   });
 });

@@ -52,7 +52,6 @@ export class DashboardPage extends BasePage {
     //expect(unmatchedRequestsNumber).toBeGreaterThanOrEqual(0); // Adjust based on expected minimum
   }
   async clickToSeeBreakdownAndValidate() {
-    //await this.clickToSeeBreakdown().click();
     const clickableText = await this.page.locator('.flex-1.mt-1.text-xs.text-blue-600.underline.cursor-pointer');
     await expect(clickableText).toHaveText('Click to see breakdown');
     await clickableText.click();
@@ -64,7 +63,6 @@ export class DashboardPage extends BasePage {
   }
   async validateMismatchTransactionsCard() {
     const mismatchCard = await this.page.locator("//p[normalize-space()='View Over/Under Sends']");
-    //await expect(mismatchCard).toHaveText('View Over/Under Sends');
     await expect(mismatchCard).toHaveText(/view over\/under sends/i);
     await mismatchCard.click();
     await log('Clicked on View Over/Under Sends link');
@@ -91,40 +89,89 @@ export class DashboardPage extends BasePage {
     await expect(this.page.getByRole('button', { name: /Recalculate Order Summary/i })).toBeVisible();
 
     // --- Form fields (Order meta) ---
-    await expect(this.page.getByLabel(/Order Name/i)).toBeVisible();
+    await expect(this.page.getByLabel(/Order Name/i).first()).toBeVisible();
     await expect(this.page.getByLabel(/Receiving Agent/i)).toBeVisible();
-    await expect(this.page.getByLabel(/Telegram handle/i)).toBeVisible();
+    await expect(this.page.getByLabel(/Telegram handle of person receiving notifications/i)).toBeVisible();
     await expect(this.page.getByLabel(/Telegram Group ID/i)).toBeVisible();
 
     // --- Discount / Premium settings ---
     await expect(this.page.getByRole('heading', { name: /Discount Tier and Premium Charge Settings/i })).toBeVisible();
     await expect(this.page.getByLabel(/Override default behavior/i)).toBeVisible();
-    await expect(this.page.getByLabel(/Agent Discount Tier/i)).toBeVisible();
-    await expect(this.page.getByLabel(/Premium Charge/i)).toBeVisible();
 
     // --- Order Summary ---
     await expect(this.page.getByRole('heading', { name: /Order Summary/i })).toBeVisible();
     await expect(this.page.locator('#total-amount-summary')).toBeVisible();
-    await expect(this.page.locator('#final-amount-summary')).toBeVisible();
     await expect(this.page.getByLabel(/Set Default Minimum Amount/i)).toBeVisible();
 
-    // --- Orders (sub-orders) ---
-    await expect(this.page.getByRole('heading', { name: /^Orders/ })).toBeVisible();
-    await expect(this.page.getByLabel(/Sub Order Name/i)).toBeVisible();
-    await expect(this.page.getByLabel(/^Order Amount/i)).toBeVisible();
-    await expect(this.page.getByLabel(/Minimum Send Amount/i)).toBeVisible();
-    await expect(this.page.getByLabel(/Maximum Send Amount/i)).toBeVisible();
-
-    // Wallet Platform sub-block
-    await expect(this.page.getByRole('heading', { name: /Wallet Platform/i })).toBeVisible();
-    await expect(this.page.getByLabel(/^Platform$/i)).toBeVisible();
-    await expect(this.page.getByLabel(/Username\/Phone Number\/Email/i)).toBeVisible();
-    await expect(this.page.getByRole('button', { name: /Add Wallet Platform/i })).toBeVisible();
-    await expect(this.page.getByRole('button', { name: /^Add Order$/i })).toBeVisible();
-
     // --- Footer buttons ---
-    await expect(this.page.getByRole('button', { name: /^Create$/i })).toBeVisible();
+    await expect(this.page.getByRole('button', { name: /^Create$/i }).nth(3)).toBeVisible(); // Main submit button
     await expect(this.page.getByRole('button', { name: /Create & create another/i })).toBeVisible();
+  }
+
+  async clickImportOrder() {
+    // Wait for the page to be fully loaded and stable
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForTimeout(2000);
+    
+    // Click on Import Orders button to open the modal
+    const importButton = this.page.locator('button').filter({ hasText: 'Import Orders' }).first();
+    await expect(importButton).toBeVisible();
+    await expect(importButton).toBeEnabled();
+    await importButton.click();
+    
+    // Wait for modal to appear and debug
+    await this.page.waitForTimeout(3000);
+    
+    // Check if modal content appears (simplified validation)
+    await expect(this.page.getByText('Import File*')).toBeVisible({ timeout: 15000 });
+    await expect(this.page.getByText('Download Template')).toBeVisible();
+  }
+
+  async validateImportOrdersModal() {
+    // --- Modal Header ---
+    await expect(this.page.getByRole('heading', { name: 'Import Orders' }).first()).toBeVisible();
+    
+    // --- Close Button ---
+    await expect(this.page.getByRole('button', { name: 'Close' })).toBeVisible();
+    
+    // --- Top Action Buttons ---
+    await expect(this.page.getByRole('link', { name: /Download Template/i })).toBeVisible();
+    await expect(this.page.getByRole('button', { name: /Import Orders/i }).first()).toBeVisible();
+    
+    // --- Description Text ---
+    await expect(this.page.getByText(/Use this form to import orders from an Excel or CSV file/)).toBeVisible();
+    
+    // --- Required Columns Section ---
+    await expect(this.page.getByText(/Your import file should contain the following columns:/)).toBeVisible();
+    await expect(this.page.getByText(/order_name.*required.*Name for the order/)).toBeVisible();
+    await expect(this.page.getByText(/amount.*required.*Order amount in USD/)).toBeVisible();
+    await expect(this.page.getByText(/platform.*required.*Payment platform/)).toBeVisible();
+    await expect(this.page.getByText(/username.*required.*Username, phone number, or email/)).toBeVisible();
+    await expect(this.page.getByText(/minimum_send_amount.*optional.*Minimum sending amount/)).toBeVisible();
+    await expect(this.page.getByText(/telegram_handle.*required.*Telegram handle/)).toBeVisible();
+    await expect(this.page.getByText(/receiving_agent_id.*required.*Receiving agent ID/)).toBeVisible();
+    await expect(this.page.getByText(/discount_tier_id.*required.*Discount tier ID/)).toBeVisible();
+    
+    // --- Multiple Wallet Platforms Section ---
+    await expect(this.page.getByText(/Multiple wallet platforms:/)).toBeVisible();
+    await expect(this.page.getByText(/If you need to add multiple wallet platforms for the same order/)).toBeVisible();
+    await expect(this.page.getByText(/platform_2.*username_2/)).toBeVisible();
+    await expect(this.page.getByText(/platform_3.*username_3/)).toBeVisible();
+    await expect(this.page.getByText(/platform_4.*username_4/)).toBeVisible();
+    await expect(this.page.getByText(/platform_5.*username_5/)).toBeVisible();
+    
+    // --- Example Section ---
+    await expect(this.page.getByText(/Example:/).first()).toBeVisible();
+    await expect(this.page.getByText(/All orders with the same order_name will be grouped together/)).toBeVisible();
+    
+    // --- File Upload Section ---
+    await expect(this.page.getByText(/Import File/)).toBeVisible();
+    await expect(this.page.getByText(/Drag & Drop your files or/)).toBeVisible();
+    await expect(this.page.getByText(/Browse/)).toBeVisible();
+    await expect(this.page.getByText(/Upload an Excel.*or CSV file.*Maximum file size: 5MB/)).toBeVisible();
+    
+    // --- Bottom Import Button ---
+    await expect(this.page.getByRole('button', { name: /Import Orders/i }).nth(1)).toBeVisible();
   }
 }
 

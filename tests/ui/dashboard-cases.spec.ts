@@ -59,4 +59,12 @@ test.describe('Dashboard Test cases', () => {
     await dashboardPage.assertLoaded();
     await dashboardPage.validateAddNewOrderButton();
   });
+  test('EW_18: Validate on clicking "Add New Order" redirects to "Add New Order" page', async ({ page, loginAsAdmin }) => {
+    await loginAsAdmin();
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.assertLoaded();
+    await dashboardPage.validateAddNewOrderButton();
+    await dashboardPage.clickAddNewOrder();
+    await expect(dashboardPage.page.locator('h1.fi-header-heading')).toContainText('Create New Order'); //heading
+  });
 });
